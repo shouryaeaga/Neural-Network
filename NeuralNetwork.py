@@ -10,8 +10,8 @@ class Layer:
 class Linear(Layer):
     def __init__(self, input_size, output_size: int):
         self.activations: np.ndarray = np.random.rand(input_size)
-        self.W: np.ndarray = np.random.rand(output_size, input_size)
-        self.b: np.ndarray = np.random.rand(output_size)
+        self.W: np.ndarray = np.random.randn(output_size, input_size) * np.sqrt(2/input_size)
+        self.b: np.ndarray = np.zeros(output_size)
         self.activation_previous = None
 
     def forward(self, activation_previous: np.ndarray) -> np.ndarray:
@@ -36,9 +36,10 @@ class NeuralNetwork:
         self.num_hidden_layers: int = num_hidden_layers
 
     def create_architecture(self):
-        self.layers = [Linear(input_size=self.input_size, output_size=self.hidden_layer_size)]
+        self.layers = [Linear(input_size=self.input_size, output_size=self.hidden_layer_size), ReLU()]
         for _ in range(self.num_hidden_layers - 1):
             self.layers.append(Linear(input_size=self.hidden_layer_size, output_size=self.hidden_layer_size))
+            self.layers.append(ReLU())
         self.layers.append(Linear(input_size=self.hidden_layer_size, output_size=self.output_size))
 
     def print_activations(self):
@@ -46,6 +47,9 @@ class NeuralNetwork:
             print(layer.activations)
 
     def forward(self, X: np.ndarray) -> np.ndarray:
+        counter = 1
         for layer in self.layers:
             X = layer.forward(X)
+            print(np.std(X), np.mean(X), counter)
+            counter += 1
         return X
