@@ -20,7 +20,6 @@ class Linear:
 
 class NeuralNetwork:
     def __init__(self, hidden_layer_size: int, output_size: int, input_size: int, num_hidden_layers: int):
-        self.weights: list[Weights] = []
         self.layers: list[Linear] = []
         if num_hidden_layers < 1:
             raise ValueError("num_hidden_layers must be greater than or equal to 1")
@@ -30,17 +29,14 @@ class NeuralNetwork:
         self.num_hidden_layers: int = num_hidden_layers
 
     def create_architecture(self):
-        self.layers = [Linear(self.hidden_layer_size)]
-        self.weights = [Weights(self.input_size, self.hidden_layer_size)]
-        for _ in range(self.num_hidden_layers-1):
-            self.layers.append(Linear(self.hidden_layer_size))
-            self.weights.append(Weights(self.hidden_layer_size, self.hidden_layer_size))
-        self.layers.append(Linear(self.output_size))
-        self.weights.append(Weights(self.hidden_layer_size, self.output_size))
+        self.layers = [Linear(input_size=self.input_size, output_size=self.hidden_layer_size)]
+        for _ in range(self.num_hidden_layers - 1):
+            self.layers.append(Linear(input_size=self.hidden_layer_size, output_size=self.hidden_layer_size))
+        self.layers.append(Linear(input_size=self.hidden_layer_size, output_size=self.output_size))
 
     def print_activations(self):
         for layer in self.layers:
-            print(layer.neurones)
+            print(layer.activations)
 
     def forward(self, X: np.ndarray) -> np.ndarray:
         for layer, weight in zip(self.layers, self.weights):
