@@ -13,6 +13,8 @@ class Linear(Layer):
         self.W: np.ndarray = np.random.randn(output_size, input_size) * np.sqrt(2/input_size)
         self.b: np.ndarray = np.zeros(output_size)
         self.activation_previous = None
+        self.input_size = input_size
+        self.output_size = output_size
 
     def forward(self, activation_previous: np.ndarray) -> np.ndarray:
         self.activation_previous = activation_previous
@@ -20,10 +22,16 @@ class Linear(Layer):
         self.activations = np.matmul(self.W, np.transpose(activation_previous)) + np.transpose(self.b)
         return self.activations
 
+    def __str__(self):
+        return "Linear layer with input dims: " + str(self.input_size) + ", output dims: " + str(self.output_size)
+
 class ReLU(Layer):
     def forward(self, X):
         self.mask = X > 0
         return X * self.mask
+
+    def __str__(self):
+        return "ReLU layer"
 
 class NeuralNetwork:
     def __init__(self, hidden_layer_size: int, output_size: int, input_size: int, num_hidden_layers: int):
@@ -42,14 +50,13 @@ class NeuralNetwork:
             self.layers.append(ReLU())
         self.layers.append(Linear(input_size=self.hidden_layer_size, output_size=self.output_size))
 
-    def print_activations(self):
-        for layer in self.layers:
-            print(layer.activations)
-
     def forward(self, X: np.ndarray) -> np.ndarray:
-        counter = 1
         for layer in self.layers:
             X = layer.forward(X)
-            print(np.std(X), np.mean(X), counter)
-            counter += 1
         return X
+
+    def __str__(self):
+        result = "Neural Network\n"
+        for layer in self.layers:
+            result += str(layer) + "\n"
+        return result
