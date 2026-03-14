@@ -1,15 +1,22 @@
 import numpy as np
 class Linear:
-    def __init__(self, num_neurones: int):
-        self.num_neurones = num_neurones
-        self.neurones: np.ndarray = np.random.rand(num_neurones)
+    def __init__(self, input_size, output_size: int):
+        self.activations: np.ndarray = np.random.rand(input_size)
+        self.W: np.ndarray = np.random.rand(output_size, input_size)
+        self.b: np.ndarray = np.random.rand(output_size)
+        self.activation_previous = None
 
-class Weights:
-    def __init__(self, layer_left_size: int, layer_right_size: int):
-        self.layer_left_size = layer_left_size
-        self.layer_right_size = layer_right_size
-        # first row is for the first node on the right, and its weights for all the neurones on the left
-        self.weights: np.ndarray = np.random.rand(layer_right_size, layer_left_size)
+    def forward(self, activation_previous: np.ndarray) -> np.ndarray:
+        self.activation_previous = activation_previous
+        self.activations = np.dot(self.W, activation_previous) + self.b
+        return self.activations
+
+# class Weights:
+#     def __init__(self, layer_left_size: int, layer_right_size: int):
+#         self.layer_left_size = layer_left_size
+#         self.layer_right_size = layer_right_size
+#         # first row is for the first node on the right, and its weights for all the neurones on the left
+#         self.weights: np.ndarray = np.random.rand(layer_right_size, layer_left_size)
 
 class NeuralNetwork:
     def __init__(self, hidden_layer_size: int, output_size: int, input_size: int, num_hidden_layers: int):
