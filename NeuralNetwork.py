@@ -24,7 +24,6 @@ class Linear(Layer):
 
     def forward(self, activation_previous: np.ndarray) -> np.ndarray:
         self.activation_previous = activation_previous
-        print(np.transpose(self.activation_previous).shape)
         self.activations = np.matmul(self.W, np.transpose(activation_previous)) + np.transpose(self.b)
         return self.activations
 
@@ -93,3 +92,13 @@ class NeuralNetwork:
 
     def set_layer_bias(self, bias: np.ndarray, layer: int):
         self.layers[layer].set_bias(bias)
+
+    def evaluate(self, X: np.ndarray) -> np.ndarray:
+        if len(X) <= 1:
+            X = np.ndarray.flatten(X)
+            return np.array(np.argmax(self.forward(X)))
+        output = []
+        for sample in X:
+            sample = np.ndarray.flatten(sample)
+            output.append(np.argmax(self.forward(sample)))
+        return np.array(output)

@@ -30,8 +30,11 @@ class MnistDataLoader:
             img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols])
             img = img.reshape(28, 28)
             img = np.divide(img, 255)
+            # forgot to normalise it like the pytorch model
+            img = (img - 0.1307) / 0.3081
             images[i][:] = img
         images = np.array(images)
+
 
         return images, labels
 
